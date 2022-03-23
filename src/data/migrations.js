@@ -8,7 +8,7 @@ async function runMigrations() {
                            .catch(e => {
                             console.log(e);
                            } );*/
-
+/*
     await queryInterface.addColumn('non_activated_users',
                                   'isAdmin', {
                                      type: Sequelize.BOOLEAN,
@@ -27,7 +27,7 @@ async function runMigrations() {
                         } )
             .catch(error => {
               console.log( error.toString() );
-            } );
+            } );*/
 
     /* await queryInterface.addColumn('users',
                                    'isAdmin', {
