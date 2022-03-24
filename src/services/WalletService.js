@@ -15,34 +15,13 @@ class WalletService {
     constructor() {
     }
 
-    /**
-     * @swagger
-     * /wallet:
-     *   post:
-     *    summary: Create wallet
-     *
-     *    description: Create a new wallet.
-     *
-     *    parameters:
-     *         - userId: "user"
-     *           in: body
-     *           type: "string"
-     *           required: true
-     *
-     *    responses:
-     *         "200":
-     *           description: "Created wallet."
-     *
-     *         "400":
-     *           description: "Bad request. UserId is mandatory"
-     *
-     *         "500":
-     *           description: "Could not create wallet."
-     */
-
     defineEvents(app, web3) {
         app.post(constants.WALLET_URL,
             this.newWallet
+                .bind(this));
+
+        app.get(constants.WALLET_URL,
+            this.getWallet
                 .bind(this));
 
         this.web3 = web3;
@@ -50,34 +29,55 @@ class WalletService {
 
     async newWallet(req, res) {
         Logger.request(constants.WALLET_URL);
-        const userId = req.body.userId;
-        if (userId === undefined) {
-            utils.setErrorResponse("UserId is mandatory.",
-                400,
-                res);
-            return;
-        }
 
         const wallet = await this.web3
-                                 .eth
-                                 .personal
-                                 .newAccount(userId);
+            .eth
+            .accounts
+            .create();
 
         Logger.info("Wallet created")
-        await Wallets.create( {
-            id: wallet,
-            creationTime: Sequelize.NOW //FIXME
-        } ).catch(error => {
-            Logger.error("Cannot save wallet: " +  error.toString());
+
+        const saved = await Wallets.create({
+            address: wallet.address,
+            privateKey: wallet.privateKey
+        }).catch(error => {
+            Logger.error("Cannot save wallet: " + error.toString());
             utils.setErrorResponse("Error to try create wallet.",
                 500,
                 res);
-        } );
+        });
 
         if (res.statusCode >= 400) {
             return;
         }
-        utils.setBodyResponse({"wallet":wallet}, 200, res);
+
+        Logger.info("Wallet saved")
+
+        utils.setBodyResponse({
+            "id": saved.id, "address": saved.address,
+            "privateKey": saved.privateKey
+        }, 200, res);
+    }
+
+    async getWallet(req, res) {
+        Logger.request(constants.WALLET_URL);
+        Logger.info("Get wallet with id:"+req)
+
+        await Wallets.create({
+            address: wallet.address,
+            privateKey: wallet.privateKey
+        }).catch(error => {
+            Logger.error("Cannot save wallet: " + error.toString());
+            utils.setErrorResponse("Error to try create wallet.",
+                500,
+                res);
+        });
+
+        if (res.statusCode >= 400) {
+            return;
+        }
+        Logger.info("Wallet saved")
+        utils.setBodyResponse({"wallet": wallet}, 200, res);
     }
 }
 

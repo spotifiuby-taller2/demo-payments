@@ -22,7 +22,7 @@ const JSON_HEADER = {
 const LOG_LEVEL = process.env
                          .LOG_LEVEL;
 
-const RESET_DATABASE = false;
+const RESET_DATABASE = true;
 
 
 /* Frontend hosts */

@@ -37,6 +37,8 @@ class App {
         this.app
             .use(bodyParser.json());
 
+        this.app.use
+
         this.app.use('/api-docs',
             swaggerUi.serve,
             swaggerUi.setup(swaggerDoc));
