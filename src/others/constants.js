@@ -22,7 +22,7 @@ const JSON_HEADER = {
 const LOG_LEVEL = process.env
                          .LOG_LEVEL;
 
-const RESET_DATABASE = true;
+const RESET_DATABASE = false ;
 
 
 /* Frontend hosts */
@@ -40,6 +40,7 @@ const USERS_HOST = process.env
 
 /* Backends paths */
 const WALLET_URL = "/wallet";
+const DEPOSIT_URL = "/deposit";
 
 /* ====== Docker vs Development config ====== */
 let nodePort;
@@ -139,5 +140,6 @@ module.exports = {
   isDevelopment,
   LOG_LEVEL,
   AUTH_FRONT,
-  WALLET_URL
+  WALLET_URL,
+  DEPOSIT_URL
 }

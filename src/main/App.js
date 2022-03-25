@@ -1,15 +1,11 @@
 const database = require('../data/database');
-const WalletService = require('../services/WalletService');
 const constants = require('../others/constants');
 const cors = require('cors');
 const express = require('express');
+const routes = require('./routes')
 const bodyParser = require("body-parser");
 const Logger = require("../services/Logger");
 const {runMigrations} = require("../data/migrations");
-const swaggerJsDoc = require('swagger-jsdoc');
-const swaggerUi = require('swagger-ui-express');
-const {swaggerConfig} = require('./swaggerConfig');
-
 const Web3 = require("web3");
 const fs = require('fs-extra');
 const path = require('path');
@@ -25,8 +21,6 @@ const source = fs.readFileSync(contractFile,
 
 const parsedContract = JSON.parse(source);
 
-const swaggerDoc = swaggerJsDoc(swaggerConfig);
-
 class App {
     constructor() {
         this.app = express();
@@ -36,14 +30,6 @@ class App {
 
         this.app
             .use(bodyParser.json());
-
-        this.app.use
-
-        this.app.use('/api-docs',
-            swaggerUi.serve,
-            swaggerUi.setup(swaggerDoc));
-
-        this.WalletService = new WalletService();
     }
 
     async syncDB() {
@@ -69,15 +55,14 @@ class App {
     }
 
     defineEvents() {
-        this.WalletService
-            .defineEvents(this.app, web3);
+        this.app.use('/', routes);
     }
 
     async deployContract() {
         const myContract = new web3.eth.Contract(parsedContract.abi);
 
         // Wallet (address) used for the deployment is non deterministic
-        const currentAccounts = await web3.eth.getAccounts();
+        const currentAccounts = await web3.eth.getAccounts(); // list of 10 accounts
         const address = currentAccounts[0];
 
         const parameter = {
@@ -96,7 +81,7 @@ class App {
             }).on('confirmation', () => {
             })
             .then((newContractInstance) => {
-                console.log('Deployed Contract Address');
+                console.log('Deployed Contract Address: ' + newContractInstance.options.address);
             });
     }
 }
