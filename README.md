@@ -1,4 +1,4 @@
-# users
+# payments
 
 [![Coverage Status](https://coveralls.io/repos/github/edjeordjian/demo-payments/badge.svg?branch=master&t=2HF3d5)](https://coveralls.io/github/edjeordjian/demo-payments?branch=master)
 
