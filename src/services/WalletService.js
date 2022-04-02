@@ -47,8 +47,8 @@ async function newWallet(req, res) {
     utils.setBodyResponse({"id": saved.id, "address": saved.address, "privateKey": saved.privateKey}, 200, res);
 }
 
-async function getWallet(req, res) {
-    Logger.info("Get wallet with id:" + req.params.id)
+async function getWalletData(req, res) {
+    Logger.info("Get wallet data with id:" + req.params.id)
 
     const wallet = await Wallets.findOne({
         attributes: ['id', 'address', 'privateKey'],
@@ -71,11 +71,11 @@ async function getWallet(req, res) {
     if (res.statusCode >= 400) {
         return;
     }
-    Logger.info("Wallet founded")
+    Logger.info(`Wallet founded: ${wallet}`)
     utils.setBodyResponse(wallet, 200, res);
 }
 
-async function getWallets(req, res) {
+async function getWalletsData(req, res) {
     Logger.info("Get all wallets")
 
     const wallets = await Wallets.findAll(
@@ -100,4 +100,27 @@ async function getWallets(req, res) {
     utils.setBodyResponse(wallets, 200, res);
 }
 
-module.exports = {newWallet, getWallet, getWallets};
+async function getWallet(walletId) {
+    Logger.info(`Get wallet with id: ${walletId}`)
+
+    const savedWallet = await Wallets.findOne({
+        attributes: ['id','privateKey'],
+        where: {
+            id: walletId
+        }
+    }).catch(error => {
+        Logger.error("Error in access to database" + error.toString());
+        return null;
+    });
+
+    if (savedWallet === null || savedWallet === undefined) {
+        Logger.error(`Cannot get wallet with id: ${walletId}`);
+        return null;
+    }
+
+    const wallet = web3.eth.accounts.privateKeyToAccount(savedWallet.privateKey)
+    Logger.info("Wallet founded")
+    return wallet
+}
+
+module.exports = {newWallet, getWalletData, getWalletsData, getWallet};

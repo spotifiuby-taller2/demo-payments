@@ -77,11 +77,12 @@ class App {
 
         await myContract.deploy(payload)
             .send(parameter, (err, transactionHash) => {
-                console.log('Transaction Hash :' + transactionHash);
+                console.log(`Transaction Hash : ${transactionHash}`);
             }).on('confirmation', () => {
             })
             .then((newContractInstance) => {
-                console.log('Deployed Contract Address: ' + newContractInstance.options.address);
+                console.log(`Deployed Contract Address: ${newContractInstance.options.address}`);
+                process.env['CONTRACT_ADDRESS'] = newContractInstance.options.address;
             });
     }
 }

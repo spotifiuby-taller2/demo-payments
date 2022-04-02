@@ -20,14 +20,14 @@ router.post(constants.WALLET_URL, (req, res) => {
 });
 
 router.get(constants.WALLET_URL + "/:id", (req, res) => {
-    WalletService.getWallet(req, res);
+    WalletService.getWalletData(req, res);
 });
 
 router.get(constants.WALLET_URL, (req, res) => {
-    WalletService.getWallets(req, res);
+    WalletService.getWalletsData(req, res);
 });
 
-router.get(constants.DEPOSIT_URL, (req, res) => {
+router.post(constants.DEPOSIT_URL, (req, res) => {
     DepositService.createDeposit(req, res);
 });
 

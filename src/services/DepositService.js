@@ -8,19 +8,73 @@ const source = fs.readFileSync(contractFile, 'utf8');
 const parsedContract = JSON.parse(source);
 const WalletService = require('../services/WalletService');
 const Logger = require("./Logger");
+const utils = require("../others/utils");
+const Deposits = require("../data/Deposit");
 
 async function createDeposit(req, res) {
-    const senderWallet = req.body.senderId;
+    Logger.info(`Creating deposit`)
+    const senderWalletId = req.body.senderId;
     const amountToSend = req.body.amountInEthers;
-    const contract = new web3.eth.Contract(parsedContract.abi);
-    const wallet = WalletService.getWallet(req.body.senderId)
+    const contract = await new web3.eth.Contract(parsedContract.abi, process.env['CONTRACT_ADDRESS']);
+    const wallet = WalletService.getWallet(senderWalletId);
+
+    if (wallet === null) {
+        utils.setErrorResponse(`Cannot get wallet with id: ${senderWalletId}`,
+            400,
+            res);
+        return;
+    }
+    console.log(`wallet: ${wallet}`);
+
+    /*const tx = contract.methods.deposit(
+        //{value: web3.utils.toHex(amountToSend)}
+    ).call({from: wallet.address});
+*/
+    //TODO
+    const tx = contract.methods.deposit().call({from: wallet.address}, function(error, result){
+        if(error){
+            utils.setErrorResponse(`Cannot deposit`,
+                500,
+                res);
+        }
+        return result;
+    });
+
+    Logger.info(`transaction: ${tx}`);
+   /* tx.wait(1).then( //FIXME
+        receipt => {
+            console.log("Transaction mined");
+            const firstEvent = receipt && receipt.events && receipt.events[0];
+            console.log(firstEvent);
+            if (firstEvent && firstEvent.event === "DepositMade") {
+                Deposits.create({
+                    id: tx.hash,
+                    senderAddress: firstEvent.args.sender,
+                    amountSent: firstEvent.args.amount
+                }).catch(error => {
+                    Logger.error("Cannot save deposit transaction: " + error.toString());
+                    utils.setErrorResponse("Error to try save deposit.",
+                        500,
+                        res);
+                });
+            } else {
+                console.error(`Payment not created in tx ${tx.hash}`);
+            }
+        },
+        error => {
+            const reasonsList = error.results && Object.values(error.results).map(o => o.reason);
+            const message = error instanceof Object && "message" in error ? error.message : JSON.stringify(error);
+            console.error("reasons List");
+            console.error(reasonsList);
+
+            console.error("message");
+            console.error(message);
+        },
+    );*/
+    utils.setBodyResponse(tx, 200, res);
 }
 
-
 async function getDeposit(req, res) {
-    const txHash = req.params.txHash;
-    tx = web3.eth.getTransaction(txHash)
-    Logger.info(tx)
     //TODO
 }
 
