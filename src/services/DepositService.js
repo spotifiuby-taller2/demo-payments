@@ -31,7 +31,7 @@ async function createDeposit(req, res) {
     ).call({from: wallet.address});
 */
     //TODO
-    const tx = contract.methods.deposit().call({from: wallet.address}, function(error, result){
+    const tx = await contract.methods.deposit().call({from: wallet.address}, function(error, result){
         if(error){
             utils.setErrorResponse(`Cannot deposit`,
                 500,
@@ -41,7 +41,8 @@ async function createDeposit(req, res) {
     });
 
     Logger.info(`transaction: ${tx}`);
-   /* tx.wait(1).then( //FIXME
+    console.log("Session: %j", tx);
+    /* tx.wait(1).then( //FIXME
         receipt => {
             console.log("Transaction mined");
             const firstEvent = receipt && receipt.events && receipt.events[0];
