@@ -1,4 +1,3 @@
-const constants = require("../others/constants");
 const utils = require("../others/utils");
 const Logger = require("./Logger");
 const Wallets = require("../data/Wallet");
@@ -71,7 +70,7 @@ async function getWalletData(req, res) {
     if (res.statusCode >= 400) {
         return;
     }
-    Logger.info(`Wallet founded: ${wallet}`)
+    Logger.info(`Wallet founded`);
     utils.setBodyResponse(wallet, 200, res);
 }
 
@@ -98,13 +97,14 @@ async function getWalletsData(req, res) {
     }
     Logger.info("wallets founded: " + wallets.length)
     utils.setBodyResponse(wallets, 200, res);
+    return wallets;
 }
 
 async function getWallet(walletId) {
     Logger.info(`Get wallet with id: ${walletId}`)
 
     const savedWallet = await Wallets.findOne({
-        attributes: ['id','privateKey'],
+        attributes: ['id', 'privateKey'],
         where: {
             id: walletId
         }

@@ -5,6 +5,10 @@ const express = require('express');
 const routes = require('./routes')
 const bodyParser = require("body-parser");
 const Logger = require("../services/Logger");
+const swaggerUi = require("swagger-ui-express");
+const {swaggerConfig} = require('./swaggerConfig');
+const swaggerJsDoc = require("swagger-jsdoc");
+const swaggerDoc = swaggerJsDoc(swaggerConfig);
 const {runMigrations} = require("../data/migrations");
 const Web3 = require("web3");
 const fs = require('fs-extra');
@@ -56,7 +60,7 @@ class App {
 
     defineEvents() {
         this.app.use('/', routes);
-    }
+        this.app.use( '/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc) );    }
 
     async deployContract() {
         const myContract = new web3.eth.Contract(parsedContract.abi);

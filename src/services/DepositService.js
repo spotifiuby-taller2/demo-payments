@@ -10,7 +10,7 @@ const WalletService = require('../services/WalletService');
 const Logger = require("./Logger");
 const utils = require("../others/utils");
 const Deposits = require("../data/Deposit");
-
+/*
 async function createDeposit(req, res) {
     Logger.info(`Creating deposit`)
     const senderWalletId = req.body.senderId;
@@ -29,7 +29,7 @@ async function createDeposit(req, res) {
     /*const tx = contract.methods.deposit(
         //{value: web3.utils.toHex(amountToSend)}
     ).call({from: wallet.address});
-*/
+
     //TODO
     const tx = await contract.methods.deposit().call({from: wallet.address}, function(error, result){
         if(error){
@@ -42,7 +42,7 @@ async function createDeposit(req, res) {
 
     Logger.info(`transaction: ${tx}`);
     console.log("Session: %j", tx);
-    /* tx.wait(1).then( //FIXME
+     tx.wait(1).then( //FIXME
         receipt => {
             console.log("Transaction mined");
             const firstEvent = receipt && receipt.events && receipt.events[0];
@@ -71,7 +71,7 @@ async function createDeposit(req, res) {
             console.error("message");
             console.error(message);
         },
-    );*/
+    );
     utils.setBodyResponse(tx, 200, res);
 }
 
@@ -79,4 +79,4 @@ async function getDeposit(req, res) {
     //TODO
 }
 
-module.exports = {createDeposit, getDeposit};
+module.exports = {createDeposit, getDeposit};*/

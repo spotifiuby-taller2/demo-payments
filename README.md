@@ -16,4 +16,4 @@ docker-compose up --build
 
 ### Arquitectura
 
-### [Bitácora y Postmortem](https://edjeordjian.github.io/bitacora/)
+### [Bitácora y Postmortem](https://github.com/spotifiuby-taller2/bitacora)
