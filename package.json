@@ -66,12 +66,12 @@
   },
   "nyc": {
     "exclude": [
-      "src/main/*",
+      "src/main/App.js",
+      "src/main/SwaggerConfig.js",
       "src/others/constants.js",
       "src/services/Logger.js",
       "**/*.test.js",
       "test/mocks/*",
-      "src/data/*",
       "coverage/*"
     ]
   }
