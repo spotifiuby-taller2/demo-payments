@@ -63,5 +63,16 @@
     "chai": "4.3.6",
     "chai-http": "4.3.0",
     "expect": "27.0.6"
+  },
+  "nyc": {
+    "exclude": [
+      "src/main/*",
+      "src/others/constants.js",
+      "src/services/Logger.js",
+      "**/*.test.js",
+      "test/mocks/*",
+      "src/data/*",
+      "coverage/*"
+    ]
   }
 }
