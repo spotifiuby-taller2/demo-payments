@@ -1,13 +1,20 @@
 const swaggerConfig = {
     definition: {
         info: {
-            title: "Users API",
+            title: "Payments API",
         },
-
-        servers: [process.env.BASE_URL + process.env.NODE_DOCKER_PORT]
+        servers: [
+            {
+                url: 'http://localhost:4483',
+                description: 'Local server'
+            },
+            {
+                url: 'https://HEROKU',
+                description: 'Prod server'
+            }
+        ]
     },
-
-    apis: ["./src/services/SignUpService.js"]
+    apis: ["./src/main/routes.js"]
 }
 
 module.exports = {

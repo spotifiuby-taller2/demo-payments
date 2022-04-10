@@ -5,49 +5,49 @@ const { BASE_SALT } = require("../others/constants");
 function setBodyResponse(responseBody,
                          status,
                          res) {
-  res.status(status)
-     .json(responseBody);
+    res.status(status)
+        .json(responseBody);
 }
 
 function setErrorResponse(error,
                           status,
                           res) {
-  const responseBody = {
-    error: error.toString()
-  }
+    const responseBody = {
+        error: error.toString()
+    }
 
-  setBodyResponse(responseBody, status, res);
+    setBodyResponse(responseBody, status, res);
 }
 
 function getDate() {
-  return new Date().toISOString()
-                   .substr(0, 10);
+    return new Date().toISOString()
+        .substr(0, 10);
 }
 
 function replaceAll(str,
                     toReplace,
                     newStr) {
-  return str.split(toReplace)
-            .join(newStr)
+    return str.split(toReplace)
+        .join(newStr)
 }
 
 // Sync = blocks the event loop
 function getBcryptOf(toHash) {
-  return bcrypt.hashSync(toHash, BASE_SALT);
+    return bcrypt.hashSync(toHash, BASE_SALT);
 }
 
 function getHashOf(toHash) {
-  // Edge case: slashes cannot be used in URLs items.
-  return replaceAll( getBcryptOf(toHash),
-                     "/",
-                     "a" );
+    // Edge case: slashes cannot be used in URLs items.
+    return replaceAll( getBcryptOf(toHash),
+        "/",
+        "a" );
 }
 
 function getId() {
-  const base = crypto.randomBytes(20)
-                     .toString('hex');
+    const base = crypto.randomBytes(20)
+        .toString('hex');
 
-  return getHashOf(base);
+    return getHashOf(base);
 }
 
 // Credits:
@@ -70,19 +70,19 @@ function getId() {
 } */
 
 function areAnyUndefined(list) {
-  return list.filter( (element) => {
-    return element === undefined
-           || element.length === 0
-  } ).length > 0;
+    return list.filter( (element) => {
+        return element === undefined
+            || element.length === 0
+    } ).length > 0;
 }
 
 module.exports = {
-  getId,
-  getBcryptOf,
-  setErrorResponse,
-  setBodyResponse,
-  replaceAll,
-  getHashOf,
-  getDate,
-  areAnyUndefined
+    getId,
+    getBcryptOf,
+    setErrorResponse,
+    setBodyResponse,
+    replaceAll,
+    getHashOf,
+    getDate,
+    areAnyUndefined
 }
