@@ -1,9 +1,0 @@
-2022-4-10 0:26:35.82 INFO  Request a : Create new wallet. 
-2022-4-10 0:26:35.82 INFO  Wallet created 
-2022-4-10 0:26:35.83 INFO  Wallet saved 
-2022-4-10 0:26:35.83 INFO  Request a : Create new wallet. 
-2022-4-10 0:26:35.83 ERROR Error to try create wallet. 
-2022-4-10 0:26:35.84 INFO  Get wallet data with id:walletId2 
-2022-4-10 0:26:35.84 INFO  Wallet founded 
-2022-4-10 0:26:35.84 INFO  Get all wallets 
-2022-4-10 0:26:35.84 INFO  wallets founded: 2 
