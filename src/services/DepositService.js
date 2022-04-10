@@ -18,7 +18,7 @@ async function createDeposit(req, res) {
     const contract = await new web3.eth.Contract(parsedContract.abi, process.env['CONTRACT_ADDRESS']);
     const wallet = WalletService.getWallet(senderWalletId);
 
-    if (wallet === null) {
+    if (wallet === null || wallet === undefined) {
         utils.setErrorResponse(`Cannot get wallet with id: ${senderWalletId}`,
             400,
             res);

@@ -94,6 +94,7 @@ router.get(constants.WALLET_URL + "/:id", (req, res) => {
 router.get(constants.WALLET_URL, (req, res) => {
     WalletService.getWalletsData(req, res);
 });
+
 /* TODO
 router.post(constants.DEPOSIT_URL, (req, res) => {
     DepositService.createDeposit(req, res);

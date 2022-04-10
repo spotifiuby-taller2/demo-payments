@@ -2,10 +2,11 @@ const utils = require("../others/utils");
 const Logger = require("./Logger");
 const Wallets = require("../data/Wallet");
 const ganache = require("ganache");
+const provider = ganache.provider();
 const Web3 = require("web3");
-const web3 = new Web3(ganache.provider());
-
-
+const web3 = new Web3(provider);
+const eth = web3.eth;
+const web3EthAccounts = eth.accounts;
 //const mnemonic = "vital bronze brave idle surround orchard inner edit document this hawk casino";
 
 //const provider = new HDWalletProvider(mnemonic,
@@ -13,12 +14,9 @@ const web3 = new Web3(ganache.provider());
 
 async function newWallet(req, res) {
     Logger.request("Create new wallet.");
-    const wallet = await web3
-        .eth
-        .accounts
-        .create();
+    const wallet = web3EthAccounts.create();
 
-    if (wallet === null) {
+    if (wallet === null || wallet === undefined) {
         Logger.error("Error to try create wallet.");
         utils.setErrorResponse("Error to try create wallet.",
             500,
@@ -27,10 +25,11 @@ async function newWallet(req, res) {
     }
 
     Logger.info("Wallet created")
-
+    const balance = await eth.getBalance(wallet.address);
     const saved = await Wallets.create({
         address: wallet.address,
-        privateKey: wallet.privateKey
+        privateKey: wallet.privateKey,
+        balance: balance
     }).catch(error => {
         Logger.error("Cannot save wallet: " + error.toString());
         utils.setErrorResponse("Error to try create wallet.",
@@ -43,14 +42,14 @@ async function newWallet(req, res) {
     }
 
     Logger.info("Wallet saved")
-    utils.setBodyResponse({"id": saved.id, "address": saved.address, "privateKey": saved.privateKey}, 200, res);
+    utils.setBodyResponse(saved, 200, res);
 }
 
 async function getWalletData(req, res) {
     Logger.info("Get wallet data with id:" + req.params.id)
 
     const wallet = await Wallets.findOne({
-        attributes: ['id', 'address', 'privateKey'],
+        attributes: ['id', 'address', 'privateKey', 'balance'],
         where: {
             id: req.params.id
         }
@@ -78,7 +77,7 @@ async function getWalletsData(req, res) {
     Logger.info("Get all wallets")
 
     const wallets = await Wallets.findAll(
-        {attributes: ['id', 'address', 'privateKey']}
+        {attributes: ['id', 'address', 'privateKey', 'balance']}
     ).catch(error => {
         Logger.error("Error in access to database" + error.toString());
         utils.setErrorResponse("Internal Server error",
@@ -100,27 +99,26 @@ async function getWalletsData(req, res) {
     return wallets;
 }
 
+/*
 async function getWallet(walletId) {
     Logger.info(`Get wallet with id: ${walletId}`)
 
     const savedWallet = await Wallets.findOne({
-        attributes: ['id', 'privateKey'],
+        attributes: ['id', 'address'],
         where: {
             id: walletId
         }
-    }).catch(error => {
-        Logger.error("Error in access to database" + error.toString());
-        return null;
-    });
+    })
 
     if (savedWallet === null || savedWallet === undefined) {
         Logger.error(`Cannot get wallet with id: ${walletId}`);
         return null;
     }
 
-    const wallet = web3.eth.accounts.privateKeyToAccount(savedWallet.privateKey)
-    Logger.info("Wallet founded")
-    return wallet
-}
+    Logger.info(`Wallet founded with address:` + savedWallet.address);
+    const balance = await web3.eth.getBalance(savedWallet.address);
+    Logger.info(`balance: ${balance}`);
+    return {id: walletId, address: savedWallet.address, balance: balance.toString()};
+}*/
 
-module.exports = {newWallet, getWalletData, getWalletsData, getWallet};
+module.exports = {newWallet, getWalletData, getWalletsData};

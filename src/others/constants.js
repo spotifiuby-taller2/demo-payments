@@ -22,7 +22,7 @@ const JSON_HEADER = {
 const LOG_LEVEL = process.env
                          .LOG_LEVEL;
 
-const RESET_DATABASE = false ;
+const RESET_DATABASE = false;
 
 
 /* Frontend hosts */
@@ -114,6 +114,8 @@ if (isDevelopment) {
 
 }
 
+const BASE_SALT = '$2b$10$sfW8rHWvJcda/4cMOq.p5.';
+
 module.exports = {
   DB_USER,
   DB_PASSWORD,
@@ -136,6 +138,7 @@ module.exports = {
   TIMEZONE,
   SYMBOL_MAX_LEN,
   TIMESTAMP_MAX_LEN,
+  BASE_SALT,
   RESET_DATABASE,
   isDevelopment,
   LOG_LEVEL,

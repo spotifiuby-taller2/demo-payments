@@ -16,6 +16,13 @@ const Wallet = database.define('wallet', {
         allowNull: false,
         validate: {notEmpty: true},
         unique: true
+    },
+
+    balance: {
+        type: Sequelize.STRING(constants.MAX_STR_LEN),
+        allowNull: false,
+        validate: {notEmpty: true},
+        unique: false
     }
 });
 
