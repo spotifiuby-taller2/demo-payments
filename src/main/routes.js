@@ -95,7 +95,6 @@ router.get(constants.WALLET_URL, (req, res) => {
     WalletService.getWalletsData(req, res);
 });
 
-/* TODO
 router.post(constants.DEPOSIT_URL, (req, res) => {
     DepositService.createDeposit(req, res);
 });
@@ -103,5 +102,5 @@ router.post(constants.DEPOSIT_URL, (req, res) => {
 router.get(constants.DEPOSIT_URL + ":txHash", (req, res) => {
     DepositService.getDeposit(req, res);
 });
-*/
+
 module.exports = router;
