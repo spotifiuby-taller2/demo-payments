@@ -21,7 +21,7 @@ async function newWallet(req, res) {
     const saved = await Wallets.create({
         address: wallet.address,
         privateKey: wallet.privateKey,
-        balance
+        balance:balance.toNumber()
     }).catch(error => {
         Logger.error("Cannot save wallet: " + error.toString());
         utils.setErrorResponse("Error to try create wallet.", 500, res);
