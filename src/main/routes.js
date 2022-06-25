@@ -99,7 +99,7 @@ router.post(constants.DEPOSIT_URL, (req, res) => {
     DepositService.createDeposit(req, res);
 });
 
-router.get(constants.DEPOSIT_URL + ":txHash", (req, res) => {
+router.get(constants.DEPOSIT_URL + "/:txHash", (req, res) => {
     DepositService.getDeposit(req, res);
 });
 

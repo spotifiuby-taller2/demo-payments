@@ -13,7 +13,7 @@ async function createDeposit(req, res) {
     Logger.info(`Creating deposit`)
     const amountToSend = req.body.amountInEthers;
     const senderWalletId = req.body.senderId;
-    const senderWallet = WalletService.getWallet(senderWalletId);
+    const senderWallet = await WalletService.getWallet(senderWalletId);
     if (senderWallet === null || senderWallet === undefined) {
         utils.setErrorResponse(`Cannot get wallet with id: ${senderWalletId}`, 400, res);
         return;
@@ -21,8 +21,12 @@ async function createDeposit(req, res) {
     const basicPayments = await getContract(senderWallet);
     const tx = await basicPayments.deposit({
         value: await ethers.utils.parseEther(amountToSend).toHexString(),
+    }).catch(error => {
+        Logger.error(error.reason);
+        utils.setErrorResponse(error.reason, 400, res);
     });
 
+    if(tx === undefined) return;
     Logger.info(`transaction: ${tx}`);
     tx.wait(1).then(
         async receipt => {
@@ -33,14 +37,15 @@ async function createDeposit(req, res) {
                 await Deposits.create({
                     id: tx.hash,
                     senderAddress: firstEvent.args.sender,
-                    amountSent: firstEvent.args.amount
+                    amountSent: ethers.utils.formatEther(firstEvent.args.amount)
                 }).catch(error => {
-                    Logger.error("Cannot save wallet: " + error.toString());
-                    utils.setErrorResponse("Error to try create wallet.", 500, res);
+                    Logger.error("Cannot save deposit: " + error.toString());
+                    utils.setErrorResponse("Error to try create deposit.", 500, res);
                 });
+                utils.setBodyResponse(tx, 200, res);
             } else {
                 Logger.error(`Payment not created in tx ${tx.hash}`);
-                utils.setErrorResponse("Error to try create wallet.", 500, res);
+                utils.setErrorResponse("Error to try create deposit.", 500, res);
             }
         },
         error => {
@@ -53,7 +58,6 @@ async function createDeposit(req, res) {
             Logger.error(message);
         },
     );
-    utils.setBodyResponse(tx, 200, res);
 }
 
 async function getDeposit(req, res) {
