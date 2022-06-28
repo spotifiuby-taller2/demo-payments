@@ -108,3 +108,4 @@ async function getWallet(walletId) {
 }
 
 module.exports = {newWallet, getWalletData, getWalletsData, getWallet};
+
