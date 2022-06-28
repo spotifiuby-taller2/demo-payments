@@ -55,11 +55,9 @@ if (process.env
                     .PORT;
 }
 
-
 /* ====== Production vs Development config ====== */
 const isDevelopment = process.env.PRODUCTION === undefined;
 let databaseUrl;
-let firebaseConfig;
 
 const DB_DIALECT="postgres";
 let DB_USER;
