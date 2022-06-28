@@ -17,6 +17,7 @@
         "startdocker": "MY_ENV= LOG_LEVEL=debug node src/main/App.js",
         "startdev": "MY_ENV=.development LOG_LEVEL=debug nodemon src/main/App.js",
         "test": "MY_ENV=.test LOG_LEVEL=debug nyc --reporter=lcov --reporter=text mocha --exit",
+
         "compile": "MY_ENV=.development hardhat compile",
         "prepare": "husky install",
         "postinstall": "npm run compile",
@@ -24,9 +25,12 @@
         "coverage": "hardhat coverage --solcoverjs ./.solcover.js --temp artifacts --testfiles \"./test/**/*.ts\"",
         "size-contracts": "hardhat size-contracts",
         "docgen": "hardhat docgen",
+        "release": "standard-version",
+
+
+
         "deploy-kovan": "hardhat deploy --network kovan",
-        "deploy-local": "hardhat deploy --network hardhat",
-        "release": "standard-version"
+        "deploy-local": "hardhat deploy --network hardhat"
     },
     "dependencies": {
         "axios": "^0.27.2",

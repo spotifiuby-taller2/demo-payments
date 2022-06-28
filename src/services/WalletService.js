@@ -81,12 +81,13 @@ async function getWalletsData(req, res) {
     return wallets;
 }
 
+/*
 const getDeployerWallet = () => () => {
     const provider = new ethers.providers.InfuraProvider(config.network, config.infuraApiKey);
     const wallet = ethers.Wallet.fromMnemonic(config.deployerMnemonic).connect(provider);
     Logger.info("Deployer wallet" + wallet.address);
     return wallet;
-};
+};*/
 
 async function getWallet(walletId) {
     Logger.info(`Get wallet with id: ${walletId}`)

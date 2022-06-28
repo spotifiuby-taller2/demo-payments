@@ -4,7 +4,7 @@ const deployArtifact = require(`../../deployments/${network}/BasicPayments`);
 const deployerMnemonic = process.env.MNEMONIC;
 const infuraApiKey = process.env.INFURA_API_KEY;
 
-console.log(deployerMnemonic);
+// console.log(deployerMnemonic);
 module.exports = {
   contractAddress: deployArtifact.address,
   contractAbi: deployArtifact.abi,
