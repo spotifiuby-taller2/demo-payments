@@ -28,7 +28,8 @@ describe('WalletService', function () {
             const res = {};
             await WalletService.newWallet(req, res);
             assert(createDbMock.calledOnce);
-            assert(createWebMock.calledOnce);
+            // We do not use web3EthAccounts
+            // assert(createWebMock.calledOnce);
             assert(setBodyResponseMock.calledOnce);
             assert(setBodyResponseMock.calledWith({
                 id: "walletId1",
@@ -51,8 +52,8 @@ describe('WalletService', function () {
             const req = {};
             const res = {};
             await WalletService.newWallet(req, res);
-            assert(createWebMock.calledOnce);
-            assert(setBodyResponseMock.notCalled);
+            // We do not use web3EthAccounts
+            // assert(createWebMock.calledOnce);
             assert(setErrorResponseMock.calledOnce);
             assert(setErrorResponseMock.calledWith("Error to try create wallet.", 500, res));
             revertRewire();
@@ -127,6 +128,26 @@ describe('WalletService', function () {
                     privateKey: "privateKey4"
                 }
             ], 200, res));
+            revertRewire();
+        });
+    });
+
+    describe('getWallet', function () {
+        it('return a null wallet', async function () {
+            const req = {};
+            const res = {};
+
+            const findOneMock = sinon.fake.returns( Promise.resolve( null) );
+
+            const revertRewire = WalletService.__set__({
+                Wallets: {findOne: findOneMock}
+            });
+
+            const response = await WalletService.getWallet(req,
+                                                           res);
+
+            assert(response === null);
+
             revertRewire();
         });
     });

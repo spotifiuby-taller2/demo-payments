@@ -12,8 +12,8 @@ describe('Utils tests : ', function() {
 
     it('replaceAll works', async function () {
         assert.strictEqual(replaceAll('$2b$/Q/hola.',
-            "/",
-            "a"),
+                "/",
+                "a"),
             '$2b$aQahola.');
     });
 
@@ -50,7 +50,7 @@ describe('Utils tests : ', function() {
         const utilsFile = rewire("../src/others/utils");
 
         utilsFile.__set__('replaceAll',
-                         () => '1234');
+            () => '1234');
 
         assert.strictEqual(utilsFile.getHashOf("a"), '1234');
     });
@@ -75,7 +75,7 @@ describe('Utils tests : ', function() {
         });
 
         assert.strictEqual(utilsFile.getDate(),
-                          '222T');
+            '222T');
     });
 
     it('areAnyUndefined', () => {
