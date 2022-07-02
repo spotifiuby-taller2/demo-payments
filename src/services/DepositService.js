@@ -140,4 +140,9 @@ const getDepositsData = async (req, res) => {
     utils.setBodyResponse(deposits, 200, res);
 }
 
-module.exports = {createDeposit, getDeposit, getDepositsData};
+module.exports = {
+    createDeposit,
+    getDeposit,
+    getDepositsData,
+    getDeposits
+};

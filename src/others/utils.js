@@ -1,5 +1,3 @@
-const bcrypt = require("bcrypt");
-const crypto = require('crypto');
 const { BASE_SALT } = require("../others/constants");
 
 function setBodyResponse(responseBody,
@@ -29,11 +27,6 @@ function replaceAll(str,
                     newStr) {
     return str.split(toReplace)
         .join(newStr)
-}
-
-// Sync = blocks the event loop
-function getBcryptOf(toHash) {
-    return bcrypt.hashSync(toHash, BASE_SALT);
 }
 
 function getHashOf(toHash) {
@@ -78,7 +71,6 @@ function areAnyUndefined(list) {
 
 module.exports = {
     getId,
-    getBcryptOf,
     setErrorResponse,
     setBodyResponse,
     replaceAll,
