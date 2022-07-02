@@ -37,36 +37,6 @@ describe('Utils tests : ', function() {
         assert.strictEqual(res.getStatus(), 401);
     });
 
-    it('getId', () => {
-        const utilsFile = rewire("../src/others/utils");
-
-        utilsFile.__set__('getHashOf',
-            () => '123');
-
-        assert.strictEqual(utilsFile.getId(), '123');
-    });
-
-    it('getHashOf', () => {
-        const utilsFile = rewire("../src/others/utils");
-
-        utilsFile.__set__('replaceAll',
-            () => '1234');
-
-        assert.strictEqual(utilsFile.getHashOf("a"), '1234');
-    });
-
-    it('getBcryptOf', () => {
-        const utilsFile = rewire("../src/others/utils");
-
-        utilsFile.__set__('bcrypt.genSaltSync',
-            () => '222');
-
-        utilsFile.__set__('bcrypt.hashSync',
-            () => '222');
-
-        assert.strictEqual(utilsFile.getBcryptOf("a"), '222');
-    });
-
     it('getDate', () => {
         const utilsFile = rewire("../src/others/utils");
 

@@ -33,6 +33,8 @@ COPY package-lock.json ./
 
 RUN npm ci
 
+COPY deployments/ ./deployments
+
 RUN mkdir logs
 COPY src/ ./src
 COPY .env* ./
