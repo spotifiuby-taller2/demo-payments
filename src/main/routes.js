@@ -103,4 +103,9 @@ router.get(constants.DEPOSIT_URL + "/:txHash", (req, res) => {
     DepositService.getDeposit(req, res);
 });
 
+router.get(constants.DEPOSITS_URL, (req, res) => {
+    DepositService.getDeposits(req,
+                               res);
+});
+
 module.exports = router;
