@@ -40,7 +40,10 @@ const USERS_HOST = process.env
 
 /* Backends paths */
 const WALLET_URL = "/wallet";
+
 const DEPOSIT_URL = "/deposit";
+
+const DEPOSITS_URL = "/deposits";
 
 /* ====== Docker vs Development config ====== */
 let nodePort;
@@ -115,14 +118,8 @@ if (isDevelopment) {
 const BASE_SALT = '$2b$10$sfW8rHWvJcda/4cMOq.p5.';
 
 module.exports = {
-  DB_USER,
-  DB_PASSWORD,
-  DB_HOST,
-  DB_PORT,
-  POSTGRES_DB,
-  DB_DIALECT,
-  SHA_LEN,
-  USERS_HOST,
+  DB_USER, DB_PASSWORD, DB_HOST, DB_PORT,
+  POSTGRES_DB, DB_DIALECT, SHA_LEN, USERS_HOST,
   JSON_HEADER,
   nodePort,
   databaseUrl,
@@ -136,11 +133,6 @@ module.exports = {
   TIMEZONE,
   SYMBOL_MAX_LEN,
   TIMESTAMP_MAX_LEN,
-  BASE_SALT,
-  RESET_DATABASE,
-  isDevelopment,
-  LOG_LEVEL,
-  AUTH_FRONT,
-  WALLET_URL,
-  DEPOSIT_URL
+  BASE_SALT, RESET_DATABASE, isDevelopment, LOG_LEVEL,
+  AUTH_FRONT, WALLET_URL, DEPOSIT_URL, DEPOSITS_URL
 }
