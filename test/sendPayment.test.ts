@@ -1,6 +1,9 @@
-/*const chai =  require('chai');
-const { waffle, ethers, getNamedAccounts } = require('hardhat');
+import chai from "chai";
+import { waffle, ethers, getNamedAccounts } from "hardhat";
 import { fixtureDepositMade } from "./common-fixtures";
+import { ContractTransaction } from "ethers";
+import { BasicPayments } from "../typechain";
+import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signer-with-address";
 
 const { loadFixture } = waffle;
 
@@ -10,17 +13,17 @@ describe(`BasicPayments - Send payments from contract`, function () {
   const amountToBeReceivedInEthers = "3";
   const amountReceived = ethers.utils.parseEther(amountToBeReceivedInEthers);
   const fixture = fixtureDepositMade(amountReceived);
-  const testSendPayment = (amountToBeSentInEthers) => {
+  const testSendPayment = (amountToBeSentInEthers: string) => {
     const amountToBeSent = ethers.utils.parseEther(amountToBeSentInEthers);
     describe(`GIVEN the Smart Contract was deployed and ${amountToBeReceivedInEthers} ethers were sent`, () => {
-      let paymentTx;
-      let basicPayments;
+      let paymentTx: ContractTransaction;
+      let basicPayments: BasicPayments;
       beforeEach(async function () {
         ({ basicPayments } = await loadFixture(fixture));
       });
       describe(`WHEN the owner makes a payment that spends ${amountToBeSentInEthers} ether`, function () {
-        let sender;
-        let receiver;
+        let sender: SignerWithAddress;
+        let receiver: SignerWithAddress;
         beforeEach(async function () {
           const { sender: senderAddress, receiver: receiverAddress } = await getNamedAccounts();
           sender = await ethers.getSigner(senderAddress);
@@ -48,12 +51,12 @@ describe(`BasicPayments - Send payments from contract`, function () {
   testSendPayment("0.0001");
 
   describe(`GIVEN the Smart Contract was deployed and ${amountToBeReceivedInEthers} ethers were sent`, () => {
-    let basicPayments;
+    let basicPayments: BasicPayments;
     beforeEach(async function () {
       ({ basicPayments } = await loadFixture(fixture));
     });
     describe(`WHEN a payment is tried to be made with 0 ethers`, function () {
-      let paymentTx;
+      let paymentTx: Promise<ContractTransaction>;
       const amountToBeSentInEthers = "0";
       const amountToBeSent = ethers.utils.parseEther(amountToBeSentInEthers);
       it(`THEN the tx fails`, async function () {
@@ -64,14 +67,14 @@ describe(`BasicPayments - Send payments from contract`, function () {
     });
   });
   describe(`GIVEN the Smart Contract was deployed and ${amountToBeReceivedInEthers} ethers were sent`, () => {
-    let basicPayments;
+    let basicPayments: BasicPayments;
     beforeEach(async function () {
       ({ basicPayments } = await loadFixture(fixture));
     });
     describe(`WHEN a payment is tried to be made with ${amountReceived
       .add(1)
       .toString()} weis, just above the limit`, function () {
-      let paymentTx;
+      let paymentTx: Promise<ContractTransaction>;
       const amountToBeSent = amountReceived.add(1);
       it(`THEN the tx fails`, async function () {
         const { receiver: receiverAddress } = await getNamedAccounts();
@@ -81,13 +84,13 @@ describe(`BasicPayments - Send payments from contract`, function () {
     });
   });
   describe(`GIVEN the Smart Contract was deployed and ${amountToBeReceivedInEthers} ethers were sent`, () => {
-    let basicPayments;
+    let basicPayments: BasicPayments;
     beforeEach(async function () {
       ({ basicPayments } = await loadFixture(fixture));
     });
     describe(`WHEN a payment is tried to be made by a non owner signer`, function () {
-      let paymentTx;
-      let sender;
+      let paymentTx: Promise<ContractTransaction>;
+      let sender: SignerWithAddress;
       const amountToBeSent = amountReceived.add(1);
       it(`THEN the tx fails`, async function () {
         const { sender: senderAddress, receiver: receiverAddress } = await getNamedAccounts();
@@ -97,4 +100,4 @@ describe(`BasicPayments - Send payments from contract`, function () {
       });
     });
   });
-});*/
+});
