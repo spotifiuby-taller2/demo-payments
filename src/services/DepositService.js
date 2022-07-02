@@ -1,82 +1,107 @@
-const Web3 = require("web3");
-const ganache = require("ganache");
-const web3 = new Web3(ganache.provider());
-const fs = require('fs-extra');
-const path = require('path');
-const contractFile = path.resolve(__dirname, "../main/artifacts/contracts/BasicPayments.sol/BasicPayments.json");
-const source = fs.readFileSync(contractFile, 'utf8');
-const parsedContract = JSON.parse(source);
 const WalletService = require('../services/WalletService');
 const Logger = require("./Logger");
 const utils = require("../others/utils");
 const Deposits = require("../data/Deposit");
-/*
-async function createDeposit(req, res) {
-    Logger.info(`Creating deposit`)
-    const senderWalletId = req.body.senderId;
-    const amountToSend = req.body.amountInEthers;
-    const contract = await new web3.eth.Contract(parsedContract.abi, process.env['CONTRACT_ADDRESS']);
-    const wallet = WalletService.getWallet(senderWalletId);
+const ethers = require("ethers");
+const config = require("../main/config");
+const Wallets = require("../data/Wallet");
 
-    if (wallet === null || wallet === undefined) {
-        utils.setErrorResponse(`Cannot get wallet with id: ${senderWalletId}`,
-            400,
-            res);
+const getContract = (senderWallet) => {
+    return new ethers.Contract(config.contractAddress, config.contractAbi, senderWallet);
+};
+
+const createDeposit = async (req, res) => {
+    Logger.info(`Creating deposit`)
+    const amountToSend = req.body.amountInEthers;
+    const senderWalletId = req.body.senderId;
+    const senderWallet = await WalletService.getWallet(senderWalletId);
+    if (senderWallet === null || senderWallet === undefined) {
+        utils.setErrorResponse(`Cannot get wallet with id: ${senderWalletId}`, 400, res);
         return;
     }
-    console.log(`wallet: ${wallet}`);
-
-    /*const tx = contract.methods.deposit(
-        //{value: web3.utils.toHex(amountToSend)}
-    ).call({from: wallet.address});
-
-    //TODO
-    const tx = await contract.methods.deposit().call({from: wallet.address}, function(error, result){
-        if(error){
-            utils.setErrorResponse(`Cannot deposit`,
-                500,
-                res);
-        }
-        return result;
+    const basicPayments = await getContract(senderWallet);
+    const tx = await basicPayments.deposit({
+        value: await ethers.utils.parseEther(amountToSend).toHexString(),
+    }).catch(error => {
+        Logger.error(error.reason);
+        utils.setErrorResponse(error.reason, 400, res);
     });
 
+    if (tx === undefined) return;
     Logger.info(`transaction: ${tx}`);
-    console.log("Session: %j", tx);
-     tx.wait(1).then( //FIXME
-        receipt => {
+    tx.wait(1).then(
+        async receipt => {
             console.log("Transaction mined");
             const firstEvent = receipt && receipt.events && receipt.events[0];
             console.log(firstEvent);
-            if (firstEvent && firstEvent.event === "DepositMade") {
-                Deposits.create({
+            if (firstEvent && firstEvent.event == "DepositMade") {
+                await Deposits.create({
                     id: tx.hash,
                     senderAddress: firstEvent.args.sender,
-                    amountSent: firstEvent.args.amount
+                    amountSent: ethers.utils.formatEther(firstEvent.args.amount)
                 }).catch(error => {
-                    Logger.error("Cannot save deposit transaction: " + error.toString());
-                    utils.setErrorResponse("Error to try save deposit.",
-                        500,
-                        res);
+                    Logger.error("Cannot save deposit: " + error.toString());
+                    utils.setErrorResponse("Error to try create deposit.", 500, res);
                 });
+                utils.setBodyResponse(tx, 200, res);
             } else {
-                console.error(`Payment not created in tx ${tx.hash}`);
+                Logger.error(`Payment not created in tx ${tx.hash}`);
+                utils.setErrorResponse("Error to try create deposit.", 500, res);
             }
         },
         error => {
             const reasonsList = error.results && Object.values(error.results).map(o => o.reason);
             const message = error instanceof Object && "message" in error ? error.message : JSON.stringify(error);
-            console.error("reasons List");
-            console.error(reasonsList);
+            Logger.error("reasons List");
+            Logger.error(reasonsList);
 
-            console.error("message");
-            console.error(message);
+            Logger.error("message");
+            Logger.error(message);
         },
     );
-    utils.setBodyResponse(tx, 200, res);
 }
 
-async function getDeposit(req, res) {
-    //TODO
+const getDeposit = async (req, res) => {
+    Logger.info("Get deposit with txHash:" + req.params.txHash)
+
+    const deposit = await Deposits.findOne({
+        where: {
+            id: req.params.txHash
+        }
+    }).catch(error => {
+        Logger.error("Error in access to database" + error.toString());
+        utils.setErrorResponse("Internal Server error", 500, res);
+    });
+
+    if (deposit === null || deposit === undefined) {
+        Logger.error("Cannot get deposit with txHash:" + req.params.txHash);
+        utils.setErrorResponse("Cannot find deposit with txHash: " + req.params.txHash, 400, res);
+    }
+    if (res.statusCode >= 400) {
+        return;
+    }
+    Logger.info(`Deposit founded`);
+    utils.setBodyResponse(deposit, 200, res);
 }
 
-module.exports = {createDeposit, getDeposit};*/
+const getDepositsData = async (req, res) => {
+    Logger.info("Get all deposits")
+    const deposits = await Deposits.findAll(
+        {attributes: ['id', 'senderAddress', 'amountSent']}
+    ).catch(error => {
+        Logger.error("Error in access to database" + error.toString());
+        utils.setErrorResponse("Internal Server error", 500, res);
+    });
+
+    if (deposits === null || deposits === undefined) {
+        Logger.error("Cannot get all deposits");
+        utils.setErrorResponse("Cannot get all deposits", 500, res);
+    }
+    if (res.statusCode >= 400) {
+        return;
+    }
+    Logger.info("deposits founded: " + deposits.length)
+    utils.setBodyResponse(deposits, 200, res);
+}
+
+module.exports = {createDeposit, getDeposit, getDepositsData};
