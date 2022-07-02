@@ -28,6 +28,7 @@ EXPOSE 8125/udp 8126/tcp
 
 WORKDIR /app
 
+COPY deployments ./
 COPY package.json ./
 COPY package-lock.json ./
 
