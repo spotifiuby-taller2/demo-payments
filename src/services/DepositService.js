@@ -4,6 +4,7 @@ const utils = require("../others/utils");
 const Deposits = require("../data/Deposit");
 const ethers = require("ethers");
 const config = require("../main/config");
+const Wallets = require("../data/Wallet");
 
 const getContract = (senderWallet) => {
     return new ethers.Contract(config.contractAddress, config.contractAbi, senderWallet);
@@ -119,3 +120,24 @@ async function getDeposits(req,
 module.exports = {
     createDeposit, getDeposit, getDeposits
 };
+const getDepositsData = async (req, res) => {
+    Logger.info("Get all deposits")
+    const deposits = await Deposits.findAll(
+        {attributes: ['id', 'senderAddress', 'amountSent']}
+    ).catch(error => {
+        Logger.error("Error in access to database" + error.toString());
+        utils.setErrorResponse("Internal Server error", 500, res);
+    });
+
+    if (deposits === null || deposits === undefined) {
+        Logger.error("Cannot get all deposits");
+        utils.setErrorResponse("Cannot get all deposits", 500, res);
+    }
+    if (res.statusCode >= 400) {
+        return;
+    }
+    Logger.info("deposits founded: " + deposits.length)
+    utils.setBodyResponse(deposits, 200, res);
+}
+
+module.exports = {createDeposit, getDeposit, getDepositsData};
