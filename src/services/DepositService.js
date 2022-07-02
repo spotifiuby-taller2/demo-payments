@@ -28,7 +28,7 @@ async function createDeposit(req,
         utils.setErrorResponse(error.reason, 400, res);
     });
 
-    if(tx === undefined) return;
+    if (tx === undefined) return;
     const txToPrint = JSON.stringify(tx);
 
     Logger.info(`transaction: ${txToPrint}`);
@@ -76,12 +76,12 @@ async function getDeposit(req,
         Logger.error("Error in access to database" + error.toString());
 
         utils.setErrorResponse("Cannot find deposit with txHash: " + req.params.txHash,
-                                400,
-                                res)
+            400,
+            res)
     });
 
     if (deposit === null || deposit === undefined
-                         || res.statusCode >= 400) {
+        || res.statusCode >= 400) {
         Logger.error("Cannot get deposit with txHash:" + req.params.txHash);
 
         return;
@@ -92,42 +92,13 @@ async function getDeposit(req,
     utils.setBodyResponse(deposit, 200, res);
 }
 
-async function getDeposits(req,
-                           res) {
-    Logger.info("Get deposits");
-
-    const deposits = await Deposits.findAll({})
-        .catch(error => {
-            Logger.error("Error accessing to database.");
-
-            return utils.setErrorResponse("No se pudieron obtener las transacciones)",
-                                          400,
-                                          res);
-        } );
-
-    if (deposits === null || deposits === undefined
-                          || res.statusCode >= 400) {
-        Logger.error("Cannot get deposits");
-
-        return;
-    }
-
-    utils.setBodyResponse(deposits,
-                          200,
-                          res);
-}
-
-module.exports = {
-    createDeposit, getDeposit, getDeposits
-};
 const getDepositsData = async (req, res) => {
     Logger.info("Get all deposits")
-    const deposits = await Deposits.findAll(
-        {attributes: ['id', 'senderAddress', 'amountSent']}
-    ).catch(error => {
-        Logger.error("Error in access to database" + error.toString());
-        utils.setErrorResponse("Internal Server error", 500, res);
-    });
+    const deposits = await Deposits.findAll()
+        .catch(error => {
+            Logger.error("Error in access to database" + error.toString());
+            utils.setErrorResponse("Internal Server error", 500, res);
+        });
 
     if (deposits === null || deposits === undefined) {
         Logger.error("Cannot get all deposits");
@@ -144,5 +115,4 @@ module.exports = {
     createDeposit,
     getDeposit,
     getDepositsData,
-    getDeposits
 };
