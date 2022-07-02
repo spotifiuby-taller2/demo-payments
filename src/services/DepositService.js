@@ -4,12 +4,13 @@ const utils = require("../others/utils");
 const Deposits = require("../data/Deposit");
 const ethers = require("ethers");
 const config = require("../main/config");
+const Wallets = require("../data/Wallet");
 
 const getContract = (senderWallet) => {
     return new ethers.Contract(config.contractAddress, config.contractAbi, senderWallet);
 };
 
-async function createDeposit(req, res) {
+const createDeposit = async (req, res) => {
     Logger.info(`Creating deposit`)
     const amountToSend = req.body.amountInEthers;
     const senderWalletId = req.body.senderId;
@@ -26,7 +27,7 @@ async function createDeposit(req, res) {
         utils.setErrorResponse(error.reason, 400, res);
     });
 
-    if(tx === undefined) return;
+    if (tx === undefined) return;
     Logger.info(`transaction: ${tx}`);
     tx.wait(1).then(
         async receipt => {
@@ -60,7 +61,7 @@ async function createDeposit(req, res) {
     );
 }
 
-async function getDeposit(req, res) {
+const getDeposit = async (req, res) => {
     Logger.info("Get deposit with txHash:" + req.params.txHash)
 
     const deposit = await Deposits.findOne({
@@ -83,4 +84,24 @@ async function getDeposit(req, res) {
     utils.setBodyResponse(deposit, 200, res);
 }
 
-module.exports = {createDeposit, getDeposit};
+const getDepositsData = async (req, res) => {
+    Logger.info("Get all deposits")
+    const deposits = await Deposits.findAll(
+        {attributes: ['id', 'senderAddress', 'amountSent']}
+    ).catch(error => {
+        Logger.error("Error in access to database" + error.toString());
+        utils.setErrorResponse("Internal Server error", 500, res);
+    });
+
+    if (deposits === null || deposits === undefined) {
+        Logger.error("Cannot get all deposits");
+        utils.setErrorResponse("Cannot get all deposits", 500, res);
+    }
+    if (res.statusCode >= 400) {
+        return;
+    }
+    Logger.info("deposits founded: " + deposits.length)
+    utils.setBodyResponse(deposits, 200, res);
+}
+
+module.exports = {createDeposit, getDeposit, getDepositsData};

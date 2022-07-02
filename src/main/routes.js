@@ -172,4 +172,23 @@ router.get(constants.DEPOSIT_URL + "/:txHash", (req, res) => {
     DepositService.getDeposit(req, res);
 });
 
+/**
+ * @swagger
+ * /deposit:
+ *    get:
+ *      tags: [Deposit]
+ *      summary: Get Deposits.
+ *      description: Get all deposits.
+ *      responses:
+ *          "200":
+ *              description: A list of deposits
+ *          "404":
+ *               description: "Not found."
+ *          "500":
+ *              description: "Internal Server Error: Cannot response the request"
+ */
+router.get(constants.DEPOSIT_URL, (req, res) => {
+    DepositService.getDepositsData(req, res);
+});
+
 module.exports = router;
