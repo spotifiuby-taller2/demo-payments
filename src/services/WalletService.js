@@ -78,7 +78,6 @@ async function getWalletsData(req, res) {
     }
     Logger.info("wallets founded: " + wallets.length)
     utils.setBodyResponse(wallets, 200, res);
-    return wallets;
 }
 
 /*
