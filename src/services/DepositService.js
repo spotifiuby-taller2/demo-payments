@@ -23,8 +23,8 @@ async function createDeposit(req,
     const tx = await basicPayments.deposit({
         value: await ethers.utils.parseEther(amountToSend).toHexString(),
     }).catch(error => {
-        Logger.error(error.reason);
-        utils.setErrorResponse(error.reason, 400, res);
+        Logger.error(JSON.stringify(error));
+        utils.setErrorResponse(error.reason ?? error, 400, res);
     });
 
     if (tx === undefined) return;
