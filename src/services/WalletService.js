@@ -106,4 +106,23 @@ async function getWallet(walletId) {
     return new ethers.Wallet(savedWallet.privateKey, provider);
 }
 
-module.exports = {newWallet, getWalletData, getWalletsData, getWallet};
+const getWalletId = async (walletAddress) => {
+    const savedWalletId = await Wallets.findOne({
+        attributes: ['id'],
+        where: {
+            address: walletAddress
+        }
+    })
+
+    if (savedWalletId === null || savedWalletId === undefined) {
+        Logger.error(`Cannot get wallet with id: ${walletId}`);
+        return null;
+    }
+
+    return savedWalletId.get({plain: true});
+}
+
+module.exports = {
+    newWallet, getWalletData, getWalletsData, getWallet,
+    getWalletId
+};
