@@ -1,6 +1,6 @@
 # payments
 
-[![Coverage Status](https://coveralls.io/repos/github/spotifiuby-taller2/demo-payments/badge.svg?branch=master&t=gdXMdU)](https://coveralls.io/github/spotifiuby-taller2/demo-payments?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/spotifiuby-taller2/demo-payments/badge.png?branch=master&t=gdXMdU)](https://coveralls.io/github/spotifiuby-taller2/demo-payments?branch=master)
 
 ### Instalación y configuración
 
