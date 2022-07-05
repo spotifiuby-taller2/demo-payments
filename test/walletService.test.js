@@ -1,6 +1,7 @@
 const rewire = require('rewire');
 const sinon = require('sinon');
 const assert = require('assert');
+const {WalletMock} = require("./mocks/WalletMock");
 const WalletService = rewire('../src/services/WalletService');
 
 describe('WalletService', function () {
@@ -147,6 +148,36 @@ describe('WalletService', function () {
                                                            res);
 
             assert(response === null);
+
+            revertRewire();
+        });
+    });
+
+    describe('getWalletId', function () {
+        it('returns a null wallet', async function () {
+            const findOneMock = sinon.fake.returns( Promise.resolve( null) );
+
+            const revertRewire = WalletService.__set__({
+                Wallets: {findOne: findOneMock}
+            });
+
+            const response = await WalletService.getWalletId("");
+
+            assert(response === null);
+
+            revertRewire();
+        });
+
+        it('returns a non null wallet', async function () {
+            const findOneMock = sinon.fake.returns( Promise.resolve( new WalletMock() ) );
+
+            const revertRewire = WalletService.__set__({
+                Wallets: {findOne: findOneMock}
+            });
+
+            const response = await WalletService.getWalletId("");
+
+            assert(response.id === 1);
 
             revertRewire();
         });
