@@ -115,7 +115,7 @@ const getWalletId = async (walletAddress) => {
     })
 
     if (savedWalletId === null || savedWalletId === undefined) {
-        Logger.error(`Cannot get wallet with id: ${walletId}`);
+        Logger.error(`Cannot get wallet with address: ${walletAddress}`);
         return null;
     }
 
